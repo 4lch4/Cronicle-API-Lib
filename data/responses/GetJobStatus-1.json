@@ -1,0 +1,142 @@
+{
+  "code": 0,
+  "job": {
+    "category": "general",
+    "plugin": "testplug",
+    "target": "allgrp",
+    "params": {
+      "duration": "30",
+      "progress": 1,
+      "burn": 0,
+      "action": "Success",
+      "secret": "Will not be shown in Event UI"
+    },
+    "timeout": 0,
+    "timezone": "UTC",
+    "now": 1697167038,
+    "source": "Manual (admin)",
+    "id": "jlno1h31zco",
+    "time_start": 1697167104.695,
+    "hostname": "cronicle",
+    "event": "elno1eqoncg",
+    "event_title": "Required Title",
+    "plugin_title": "Test Plugin",
+    "category_title": "General",
+    "nice_target": "All Servers",
+    "command": "bin/test-plugin.js",
+    "log_file": "/opt/cronicle/logs/jobs/jlno1h31zco.log",
+    "pid": 215990,
+    "progress": 1,
+    "cpu": {
+      "min": 1.3,
+      "max": 1.8,
+      "total": 3.1,
+      "count": 2,
+      "current": 1.3
+    },
+    "mem": {
+      "min": 51019776,
+      "max": 51019776,
+      "total": 102039552,
+      "count": 2,
+      "current": 51019776
+    },
+    "complete": 1,
+    "log_file_size": 22497,
+    "code": 0,
+
+    "description": "Success!",
+    "perf": "scale=1&total=30.053&db_query=0.158&db_connect=1.53&log_read=4.161&gzip_data=5.379&http_post=5.996",
+    "table": {
+      "title": "Sample Job Stats",
+      "header": [
+        "IP Address",
+        "DNS Lookup",
+        "Flag",
+        "Count",
+        "Percentage"
+      ],
+      "rows": [
+        [
+          "62.121.210.2",
+          "directing.com",
+          "MaxEvents-ImpsUserHour-DMZ",
+          138,
+          "0.0032%"
+        ],
+        [
+          "97.247.105.50",
+          "hsd2.nm.comcast.net",
+          "MaxEvents-ImpsUserHour-ILUA",
+          84,
+          "0.0019%"
+        ],
+        [
+          "21.153.110.51",
+          "grandnetworks.net",
+          "InvalidIP-Basic",
+          20,
+          "0.00046%"
+        ],
+        [
+          "95.224.240.69",
+          "hsd6.mi.comcast.net",
+          "MaxEvents-ImpsUserHour-NM",
+          19,
+          "0.00044%"
+        ],
+        [
+          "72.129.60.245",
+          "hsd6.nm.comcast.net",
+          "InvalidCat-Domestic",
+          17,
+          "0.00039%"
+        ],
+        [
+          "21.239.78.116",
+          "cable.mindsprung.com",
+          "InvalidDog-Exotic",
+          15,
+          "0.00037%"
+        ],
+        [
+          "172.24.147.27",
+          "cliento.mchsi.com",
+          "MaxEvents-ClicksPer",
+          14,
+          "0.00035%"
+        ],
+        [
+          "60.203.211.33",
+          "rgv.res.com",
+          "InvalidFrog-Croak",
+          14,
+          "0.00030%"
+        ],
+        [
+          "24.8.8.129",
+          "dsl.att.com",
+          "Pizza-Hawaiian",
+          12,
+          "0.00025%"
+        ],
+        [
+          "255.255.1.1",
+          "favoriteisp.com",
+          "Random-Data",
+          10,
+          "0%"
+        ]
+      ],
+      "caption": "This is an example stats table you can generate from within your Plugin code."
+    },
+    "html": {
+      "title": "Sample Job Report",
+      "content": "<pre>This is a sample text report you can generate from within your Plugin code (can be HTML too).\n\n-------------------------------------------------\n          Date/Time | 2015-10-01 6:28:38 AM      \n       Elapsed Time | 1 hour 15 minutes          \n     Total Log Rows | 4,313,619                  \n       Skipped Rows | 15                         \n  Pre-Filtered Rows | 16,847                     \n             Events | 4,296,757                  \n        Impressions | 4,287,421                  \n Backup Impressions | 4,000                      \n             Clicks | 5,309 (0.12%)              \n      Backup Clicks | 27 (0.00062%)              \n       Unique Users | 1,239,502                  \n      Flagged Users | 1,651                      \n      Ignored Users | 1,025,910                  \n        Other Users | 211,941                    \n     Flagged Events | 6,575 (0.15%)              \nFlagged Impressions | 6,327 (0.14%)              \n     Flagged Clicks | 241 (4.53%)                \n       Memory Usage | 7.38 GB                    \n-------------------------------------------------</pre>",
+      "caption": ""
+    },
+    "time_end": 1697167134.855,
+    "elapsed": 30.16000008583069,
+    "type": "cronicle_job"
+  }
+}
