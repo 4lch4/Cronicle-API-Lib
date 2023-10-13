@@ -1,4 +1,4 @@
-import { AlgorithmChoice, BuiltInPlugin, JobTimingDetails, Target } from './index.js'
+import { AlgorithmChoice, BuiltInPlugin, JobTimingDetails, Target, Timezone } from './index.js'
 
 /**
  * This interfaces describes the various properties that can be attached to any response from the
@@ -100,11 +100,8 @@ export type EventData = {
   /** The maximum allowed run time for jobs, specified in seconds. */
   timeout?: number
 
-  /**
-   * The timezone for interpreting the event timing settings. Needs to be an [IANA timezone
-   * string](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones).
-   */
-  timezone?: string
+  /** The timezone for interpreting the event timing settings. */
+  timezone?: Timezone
 
   /** An object describing when to run scheduled jobs. */
   timing?: JobTimingDetails
