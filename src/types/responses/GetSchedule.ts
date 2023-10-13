@@ -1,4 +1,4 @@
-import { JobTimingDetails, EventData, PaginatedResponse, BuiltInPlugin } from '../shared/index.js'
+import { BuiltInPlugin, EventData, JobTimingDetails, PaginatedResponse } from '../shared/index.js'
 
 /**
  * This interface defines the shape of the response from the `GET /api/app/get_schedule` endpoint

@@ -49,84 +49,18 @@
     "perf": "scale=1&total=30.053&db_query=0.158&db_connect=1.53&log_read=4.161&gzip_data=5.379&http_post=5.996",
     "table": {
       "title": "Sample Job Stats",
-      "header": [
-        "IP Address",
-        "DNS Lookup",
-        "Flag",
-        "Count",
-        "Percentage"
-      ],
+      "header": ["IP Address", "DNS Lookup", "Flag", "Count", "Percentage"],
       "rows": [
-        [
-          "62.121.210.2",
-          "directing.com",
-          "MaxEvents-ImpsUserHour-DMZ",
-          138,
-          "0.0032%"
-        ],
-        [
-          "97.247.105.50",
-          "hsd2.nm.comcast.net",
-          "MaxEvents-ImpsUserHour-ILUA",
-          84,
-          "0.0019%"
-        ],
-        [
-          "21.153.110.51",
-          "grandnetworks.net",
-          "InvalidIP-Basic",
-          20,
-          "0.00046%"
-        ],
-        [
-          "95.224.240.69",
-          "hsd6.mi.comcast.net",
-          "MaxEvents-ImpsUserHour-NM",
-          19,
-          "0.00044%"
-        ],
-        [
-          "72.129.60.245",
-          "hsd6.nm.comcast.net",
-          "InvalidCat-Domestic",
-          17,
-          "0.00039%"
-        ],
-        [
-          "21.239.78.116",
-          "cable.mindsprung.com",
-          "InvalidDog-Exotic",
-          15,
-          "0.00037%"
-        ],
-        [
-          "172.24.147.27",
-          "cliento.mchsi.com",
-          "MaxEvents-ClicksPer",
-          14,
-          "0.00035%"
-        ],
-        [
-          "60.203.211.33",
-          "rgv.res.com",
-          "InvalidFrog-Croak",
-          14,
-          "0.00030%"
-        ],
-        [
-          "24.8.8.129",
-          "dsl.att.com",
-          "Pizza-Hawaiian",
-          12,
-          "0.00025%"
-        ],
-        [
-          "255.255.1.1",
-          "favoriteisp.com",
-          "Random-Data",
-          10,
-          "0%"
-        ]
+        ["62.121.210.2", "directing.com", "MaxEvents-ImpsUserHour-DMZ", 138, "0.0032%"],
+        ["97.247.105.50", "hsd2.nm.comcast.net", "MaxEvents-ImpsUserHour-ILUA", 84, "0.0019%"],
+        ["21.153.110.51", "grandnetworks.net", "InvalidIP-Basic", 20, "0.00046%"],
+        ["95.224.240.69", "hsd6.mi.comcast.net", "MaxEvents-ImpsUserHour-NM", 19, "0.00044%"],
+        ["72.129.60.245", "hsd6.nm.comcast.net", "InvalidCat-Domestic", 17, "0.00039%"],
+        ["21.239.78.116", "cable.mindsprung.com", "InvalidDog-Exotic", 15, "0.00037%"],
+        ["172.24.147.27", "cliento.mchsi.com", "MaxEvents-ClicksPer", 14, "0.00035%"],
+        ["60.203.211.33", "rgv.res.com", "InvalidFrog-Croak", 14, "0.00030%"],
+        ["24.8.8.129", "dsl.att.com", "Pizza-Hawaiian", 12, "0.00025%"],
+        ["255.255.1.1", "favoriteisp.com", "Random-Data", 10, "0%"]
       ],
       "caption": "This is an example stats table you can generate from within your Plugin code."
     },

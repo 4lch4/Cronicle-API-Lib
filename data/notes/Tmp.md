@@ -1,68 +1,69 @@
-&larr; *[Return to the main document](https://github.com/jhuckaby/Cronicle/blob/master/README.md)*
+&larr; _[Return to the main document](https://github.com/jhuckaby/Cronicle/blob/master/README.md)_
 
 <hr/>
 
 <!-- toc -->
+
 - [API Reference](#api-reference)
-	* [JSON REST API](#json-rest-api)
-		+ [Redirects](#redirects)
-	* [API Keys](#api-keys)
-	* [Standard Response Format](#standard-response-format)
-	* [API Calls](#api-calls)
-		+ [get_schedule](#get_schedule)
-		+ [get_event](#get_event)
-		+ [create_event](#create_event)
-		+ [update_event](#update_event)
-		+ [delete_event](#delete_event)
-		+ [get_event_history](#get_event_history)
-		+ [get_history](#get_history)
-		+ [run_event](#run_event)
-		+ [get_job_status](#get_job_status)
-		+ [get_active_jobs](#get_active_jobs)
-		+ [update_job](#update_job)
-		+ [abort_job](#abort_job)
-		+ [get_master_state](#get_master_state)
-		+ [update_master_state](#update_master_state)
-	* [Event Data Format](#event-data-format)
-		+ [Event Timing Object](#event-timing-object)
+  - [JSON REST API](#json-rest-api)
+    - [Redirects](#redirects)
+  - [API Keys](#api-keys)
+  - [Standard Response Format](#standard-response-format)
+  - [API Calls](#api-calls)
+    - [get_schedule](#get_schedule)
+    - [get_event](#get_event)
+    - [create_event](#create_event)
+    - [update_event](#update_event)
+    - [delete_event](#delete_event)
+    - [get_event_history](#get_event_history)
+    - [get_history](#get_history)
+    - [run_event](#run_event)
+    - [get_job_status](#get_job_status)
+    - [get_active_jobs](#get_active_jobs)
+    - [update_job](#update_job)
+    - [abort_job](#abort_job)
+    - [get_master_state](#get_master_state)
+    - [update_master_state](#update_master_state)
+  - [Event Data Format](#event-data-format)
+    - [Event Timing Object](#event-timing-object)
 
 # API Reference
 
 ## JSON REST API
 
-All API calls expect JSON as input (unless they are simple HTTP GETs), and will return JSON as output.  The main API endpoint is:
+All API calls expect JSON as input (unless they are simple HTTP GETs), and will return JSON as output. The main API endpoint is:
 
 ```
 /api/app/NAME/v1
 ```
 
-Replace `NAME` with the specific API function you are calling (see below for list).  All requests should be HTTP GET or HTTP POST as the API dictates, and should be directed at the Cronicle primary server on the correct TCP port (the default is `3012` but is often reconfigured to be `80`).  Example URL:
+Replace `NAME` with the specific API function you are calling (see below for list). All requests should be HTTP GET or HTTP POST as the API dictates, and should be directed at the Cronicle primary server on the correct TCP port (the default is `3012` but is often reconfigured to be `80`). Example URL:
 
 ```
 http://myserver.com:3012/api/app/get_schedule/v1
 ```
 
-For web browser access, [JSONP](https://en.wikipedia.org/wiki/JSONP) response style is supported for all API calls, by including a `callback` query parameter.  However, all responses include a `Access-Control-Allow-Origin: *` header, so cross-domain [XHR](https://en.wikipedia.org/wiki/XMLHttpRequest) requests will work as well.
+For web browser access, [JSONP](https://en.wikipedia.org/wiki/JSONP) response style is supported for all API calls, by including a `callback` query parameter. However, all responses include a `Access-Control-Allow-Origin: *` header, so cross-domain [XHR](https://en.wikipedia.org/wiki/XMLHttpRequest) requests will work as well.
 
 ### Redirects
 
-If you are running a multi-server Cronicle cluster with multiple primary backup servers behind a load balancer, you may receive a `HTTP 302` response if you hit a non-primary server for an API request.  In this case, the `Location` response header will contain the proper primary server hostname.  Please repeat your request pointed at the correct server.  Most HTTP request libraries have an option to automatically follow redirects, so you can make this process automatic.
+If you are running a multi-server Cronicle cluster with multiple primary backup servers behind a load balancer, you may receive a `HTTP 302` response if you hit a non-primary server for an API request. In this case, the `Location` response header will contain the proper primary server hostname. Please repeat your request pointed at the correct server. Most HTTP request libraries have an option to automatically follow redirects, so you can make this process automatic.
 
-It is recommended (although not required) that you cache the primary server hostname if you receive a 302 redirect response, so you can make subsequent calls to the primary server directly, without requiring a round trip.  
+It is recommended (although not required) that you cache the primary server hostname if you receive a 302 redirect response, so you can make subsequent calls to the primary server directly, without requiring a round trip.
 
 ## API Keys
 
-API Keys allow you to register external applications or services to use the REST API.  These can be thought of as special user accounts specifically for applications.  API calls include running jobs on-demand, monitoring job status, and managing the schedule (creating, editing and/or deleting events).  Each API key can be granted a specific set of privileges.
+API Keys allow you to register external applications or services to use the REST API. These can be thought of as special user accounts specifically for applications. API calls include running jobs on-demand, monitoring job status, and managing the schedule (creating, editing and/or deleting events). Each API key can be granted a specific set of privileges.
 
-To create an API Key, you must first be an administrator level user.  Login to the Cronicle UI, proceed to the [API Keys Tab](WebUI.md#api-keys-tab), and click the "Add API Key..." button.  Fill out the form and click the "Create Key" button at the bottom of the page.
+To create an API Key, you must first be an administrator level user. Login to the Cronicle UI, proceed to the [API Keys Tab](WebUI.md#api-keys-tab), and click the "Add API Key..." button. Fill out the form and click the "Create Key" button at the bottom of the page.
 
-API Keys are randomly generated hexadecimal strings, and are 32 characters in length.  Example:
+API Keys are randomly generated hexadecimal strings, and are 32 characters in length. Example:
 
 ```
 0095f5b664b93304d5f8b1a61df605fb
 ```
 
-You must include a valid API Key with every API request.  There are three ways to do this: include a `X-API-Key` HTTP request header, an `api_key` query string parameter, or an `api_key` JSON property.
+You must include a valid API Key with every API request. There are three ways to do this: include a `X-API-Key` HTTP request header, an `api_key` query string parameter, or an `api_key` JSON property.
 
 Here is a raw HTTP request showing all three methods of passing the API Key (only one of these is required):
 
@@ -77,7 +78,7 @@ Content-Type: application/json
 
 ## Standard Response Format
 
-Regardless of the specific API call you requested, all responses will be in JSON format, and include at the very least a `code` property.  This will be set to `0` upon success, or any other value if an error occurred.  In the event of an error, a `description` property will also be included, containing the error message itself.  Individual API calls may include additional properties, but these two are standard fare in all cases.  Example successful response:
+Regardless of the specific API call you requested, all responses will be in JSON format, and include at the very least a `code` property. This will be set to `0` upon success, or any other value if an error occurred. In the event of an error, a `description` property will also be included, containing the error message itself. Individual API calls may include additional properties, but these two are standard fare in all cases. Example successful response:
 
 ```js
 { "code": 0 }
@@ -99,7 +100,7 @@ Here is the list of supported API calls:
 /api/app/get_schedule/v1
 ```
 
-This fetches scheduled events and returns details about them.  It supports pagination to fetch chunks, with the default being the first 50 events.  Both HTTP GET (query string) or HTTP POST (JSON data) are acceptable.  Parameters:
+This fetches scheduled events and returns details about them. It supports pagination to fetch chunks, with the default being the first 50 events. Both HTTP GET (query string) or HTTP POST (JSON data) are acceptable. Parameters:
 
 | Parameter Name | Description                                                                    |
 | -------------- | ------------------------------------------------------------------------------ |
@@ -162,9 +163,9 @@ Example response:
 
 In addition to the [Standard Response Format](APIReference.md#standard-response-format), this API will include the following:
 
-The `rows` array will contain an element for every matched event in the requested set.  It will contain up to `limit` elements.  See the [Event Data Format](APIReference.md#event-data-format) section below for details on the event object properties themselves.
+The `rows` array will contain an element for every matched event in the requested set. It will contain up to `limit` elements. See the [Event Data Format](APIReference.md#event-data-format) section below for details on the event object properties themselves.
 
-The `list` object contains internal metadata about the list structure in storage.  You can probably ignore this, except perhaps the `list.length` property, which will contain the total number of events in the schedule, regardless if your `offset` and `limit` parameters.  This can be useful for building pagination systems.
+The `list` object contains internal metadata about the list structure in storage. You can probably ignore this, except perhaps the `list.length` property, which will contain the total number of events in the schedule, regardless if your `offset` and `limit` parameters. This can be useful for building pagination systems.
 
 ### get_event
 
@@ -172,7 +173,7 @@ The `list` object contains internal metadata about the list structure in storage
 /api/app/get_event/v1
 ```
 
-This fetches details about a single event, given its ID or exact title.  Both HTTP GET (query string) or HTTP POST (JSON data) are acceptable.  Parameters:
+This fetches details about a single event, given its ID or exact title. Both HTTP GET (query string) or HTTP POST (JSON data) are acceptable. Parameters:
 
 | Parameter Name | Description                                                                 |
 | -------------- | --------------------------------------------------------------------------- |
@@ -231,11 +232,11 @@ Example response:
 
 In addition to the [Standard Response Format](APIReference.md#standard-response-format), this API will include the following:
 
-The `event` object will contain the details for the requested event.  See the [Event Data Format](APIReference.md#event-data-format) section below for details on the event object properties themselves.
+The `event` object will contain the details for the requested event. See the [Event Data Format](APIReference.md#event-data-format) section below for details on the event object properties themselves.
 
 If [Allow Queued Jobs](WebUI.md#allow-queued-jobs) is enabled on the event, the API response will also include a `queue` property, which will be set to the number of jobs currently queued up.
 
-If there are any active jobs currently running for the event, they will also be included in the response, in a `jobs` array.  Each job object will contain detailed information about the running job.  See [get_job_status](APIReference.md#get_job_status) below for more details.
+If there are any active jobs currently running for the event, they will also be included in the response, in a `jobs` array. Each job object will contain detailed information about the running job. See [get_job_status](APIReference.md#get_job_status) below for more details.
 
 ### create_event
 
@@ -243,17 +244,17 @@ If there are any active jobs currently running for the event, they will also be 
 /api/app/create_event/v1
 ```
 
-This creates a new event and adds it to the schedule.  API Keys require the `create_events` privilege to use this API.  Only HTTP POST (JSON data) is acceptable.  The required parameters are as follows:
+This creates a new event and adds it to the schedule. API Keys require the `create_events` privilege to use this API. Only HTTP POST (JSON data) is acceptable. The required parameters are as follows:
 
 | Parameter Name | Description                                                                                                                        |
 | -------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
 | `title`        | **(Required)** A display name for the event, shown on the [Schedule Tab](WebUI.md#schedule-tab) as well as in reports and e-mails. |
-| `enabled`      | **(Required)** Specifies whether the event is enabled (active in the scheduler) or not.  Should be set to 1 or 0.                  |
-| `category`     | **(Required)** The Category ID to which the event will be assigned.  See [Categories Tab](WebUI.md#categories-tab).                |
+| `enabled`      | **(Required)** Specifies whether the event is enabled (active in the scheduler) or not. Should be set to 1 or 0.                   |
+| `category`     | **(Required)** The Category ID to which the event will be assigned. See [Categories Tab](WebUI.md#categories-tab).                 |
 | `plugin`       | **(Required)** The ID of the Plugin which will run jobs for the event. See [Plugins Tab](WebUI.md#plugins-tab).                    |
 | `target`       | **(Required)** Events can target a [Server Group](WebUI.md#server-groups) (Group ID), or an individual server (hostname).          |
 
-In addition to the required parameters, almost anything in the [Event Data Object](APIReference.md#event-data-format) can also be included here.  Example request:
+In addition to the required parameters, almost anything in the [Event Data Object](APIReference.md#event-data-format) can also be included here. Example request:
 
 ```js
 {
@@ -309,7 +310,7 @@ In addition to the [Standard Response Format](APIReference.md#standard-response-
 /api/app/update_event/v1
 ```
 
-This updates an existing event given its ID, replacing any properties you specify.  API Keys require the `edit_events` privilege to use this API.  Only HTTP POST (JSON data) is acceptable.  The parameters are as follows:
+This updates an existing event given its ID, replacing any properties you specify. API Keys require the `edit_events` privilege to use this API. Only HTTP POST (JSON data) is acceptable. The parameters are as follows:
 
 | Parameter Name | Description                                                                                                            |
 | -------------- | ---------------------------------------------------------------------------------------------------------------------- |
@@ -317,7 +318,7 @@ This updates an existing event given its ID, replacing any properties you specif
 | `reset_cursor` | (Optional) Reset the event clock to the given Epoch timestamp (see [Event Time Machine](WebUI.md#event-time-machine)). |
 | `abort_jobs`   | (Optional) If you are disabling the event by setting `enabled` to 0, you may also abort any running jobs if you want.  |
 
-Include anything from the [Event Data Object](APIReference.md#event-data-format) to update (i.e. replace) the values.  Anything omitted is preserved.  Example request:
+Include anything from the [Event Data Object](APIReference.md#event-data-format) to update (i.e. replace) the values. Anything omitted is preserved. Example request:
 
 ```js
 {
@@ -384,7 +385,7 @@ See the [Standard Response Format](APIReference.md#standard-response-format) for
 /api/app/delete_event/v1
 ```
 
-This deletes an existing event given its ID.  Note that the event must not have any active jobs still running (or else an error will be returned).  API Keys require the `delete_events` privilege to use this API.  Only HTTP POST (JSON data) is acceptable.  The parameters are as follows:
+This deletes an existing event given its ID. Note that the event must not have any active jobs still running (or else an error will be returned). API Keys require the `delete_events` privilege to use this API. Only HTTP POST (JSON data) is acceptable. The parameters are as follows:
 
 | Parameter Name | Description                                            |
 | -------------- | ------------------------------------------------------ |
@@ -414,13 +415,13 @@ See the [Standard Response Format](APIReference.md#standard-response-format) for
 /api/app/get_event_history/v1
 ```
 
-This fetches the event history (i.e. previously completed jobs) for a specific event.  The response array is sorted by reverse timestamp (descending), so the latest jobs are listed first.  The parameters are as follows:
+This fetches the event history (i.e. previously completed jobs) for a specific event. The response array is sorted by reverse timestamp (descending), so the latest jobs are listed first. The parameters are as follows:
 
-| Parameter Name | Description                                                                                                                                                        |
-| -------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `id`           | The **Event ID** of the scheduled event you want to get history for.  You can find this on the Edit Event page at the very top of the form, above the event title. |
-| `offset`       | The offset into the data.  Passing `0` means get the latest jobs.                                                                                                  |
-| `limit`        | The number of jobs to fetch.                                                                                                                                       |
+| Parameter Name | Description                                                                                                                                                       |
+| -------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `id`           | The **Event ID** of the scheduled event you want to get history for. You can find this on the Edit Event page at the very top of the form, above the event title. |
+| `offset`       | The offset into the data. Passing `0` means get the latest jobs.                                                                                                  |
+| `limit`        | The number of jobs to fetch.                                                                                                                                      |
 
 Example request:
 
@@ -442,7 +443,7 @@ Example response:
 }
 ```
 
-In addition to the [Standard Response Format](APIReference.md#standard-response-format), the `rows` array contains information about the completed jobs, each one following the [Event Data Format](#event-data-format).  The `list.length` property contains the full list of all available items, regardless of your `offset` and `limit` parameters.
+In addition to the [Standard Response Format](APIReference.md#standard-response-format), the `rows` array contains information about the completed jobs, each one following the [Event Data Format](#event-data-format). The `list.length` property contains the full list of all available items, regardless of your `offset` and `limit` parameters.
 
 This API requires authentication, so please setup an [API Key](#api-keys) and pass it in using any of the methods available.
 
@@ -452,12 +453,12 @@ This API requires authentication, so please setup an [API Key](#api-keys) and pa
 /api/app/get_history/v1
 ```
 
-This fetches previously completed jobs for **all** events.  The response array is sorted by reverse timestamp (descending), so the latest jobs are listed first.  The parameters are as follows:
+This fetches previously completed jobs for **all** events. The response array is sorted by reverse timestamp (descending), so the latest jobs are listed first. The parameters are as follows:
 
-| Parameter Name | Description                                                       |
-| -------------- | ----------------------------------------------------------------- |
-| `offset`       | The offset into the data.  Passing `0` means get the latest jobs. |
-| `limit`        | The number of jobs to fetch.                                      |
+| Parameter Name | Description                                                      |
+| -------------- | ---------------------------------------------------------------- |
+| `offset`       | The offset into the data. Passing `0` means get the latest jobs. |
+| `limit`        | The number of jobs to fetch.                                     |
 
 Example request:
 
@@ -478,7 +479,7 @@ Example response:
 }
 ```
 
-In addition to the [Standard Response Format](APIReference.md#standard-response-format), the `rows` array contains information about the completed jobs, each one following the [Event Data Format](#event-data-format).  The `list.length` property contains the full list of all available items, regardless of your `offset` and `limit` parameters.
+In addition to the [Standard Response Format](APIReference.md#standard-response-format), the `rows` array contains information about the completed jobs, each one following the [Event Data Format](#event-data-format). The `list.length` property contains the full list of all available items, regardless of your `offset` and `limit` parameters.
 
 This API requires authentication, so please setup an [API Key](#api-keys) and pass it in using any of the methods available.
 
@@ -488,14 +489,14 @@ This API requires authentication, so please setup an [API Key](#api-keys) and pa
 /api/app/run_event/v1
 ```
 
-This immediately starts an on-demand job for an event, regardless of the schedule.  This is effectively the same as a user clicking the "Run Now" button in the UI.  API Keys require the `run_events` privilege to use this API.  Both HTTP GET (query string) or HTTP POST (JSON data) are acceptable.  You can specify the target event by its ID or exact title:
+This immediately starts an on-demand job for an event, regardless of the schedule. This is effectively the same as a user clicking the "Run Now" button in the UI. API Keys require the `run_events` privilege to use this API. Both HTTP GET (query string) or HTTP POST (JSON data) are acceptable. You can specify the target event by its ID or exact title:
 
 | Parameter Name | Description                                                              |
 | -------------- | ------------------------------------------------------------------------ |
 | `id`           | The ID of the event you wish to run a job for.                           |
 | `title`        | The exact title of the event you wish to run a job for (case-sensitive). |
 
-You can also include almost anything from the [Event Data Object](APIReference.md#event-data-format) to customize the settings for the job.  Anything omitted is pulled from the event object.  Example request:
+You can also include almost anything from the [Event Data Object](APIReference.md#event-data-format) to customize the settings for the job. Anything omitted is pulled from the event object. Example request:
 
 ```js
 {
@@ -535,7 +536,7 @@ Example request with everything customized:
 }
 ```
 
-Note that the `params` object can be omitted entirely, or sparsely populated, and any missing properties that are defined in the event are automatically merged in.  This allows your API client to only specify the `params` it needs to (including arbitrary new ones).
+Note that the `params` object can be omitted entirely, or sparsely populated, and any missing properties that are defined in the event are automatically merged in. This allows your API client to only specify the `params` it needs to (including arbitrary new ones).
 
 Example response:
 
@@ -546,7 +547,7 @@ Example response:
 }
 ```
 
-In addition to the [Standard Response Format](APIReference.md#standard-response-format), the IDs of all the launched jobs will be returned in the `ids` array.  Typically only a single job is launched, but it may be multiple if the event has [Multiplexing](WebUI.md#multiplexing) enabled and targets a group with multiple servers.
+In addition to the [Standard Response Format](APIReference.md#standard-response-format), the IDs of all the launched jobs will be returned in the `ids` array. Typically only a single job is launched, but it may be multiple if the event has [Multiplexing](WebUI.md#multiplexing) enabled and targets a group with multiple servers.
 
 If [Allow Queued Jobs](WebUI.md#allow-queued-jobs) is enabled on the event, the API response will also include a `queue` property, which will be set to the number of jobs currently queued up.
 
@@ -558,7 +559,7 @@ If [Allow Queued Jobs](WebUI.md#allow-queued-jobs) is enabled on the event, the 
 /api/app/get_job_status/v1
 ```
 
-This fetches status for a job currently in progress, or one already completed.  Both HTTP GET (query string) or HTTP POST (JSON data) are acceptable.  Parameters:
+This fetches status for a job currently in progress, or one already completed. Both HTTP GET (query string) or HTTP POST (JSON data) are acceptable. Parameters:
 
 | Parameter Name | Description                                                   |
 | -------------- | ------------------------------------------------------------- |
@@ -652,14 +653,14 @@ In the `job` object you'll find all the standard [Event Data Object](APIReferenc
 | `pid`         | The main PID of the job process that was spawned.                                                                                            |
 | `progress`    | Current progress of the job, from `0.0` to `1.0`, as reported by the Plugin (optional).                                                      |
 | `complete`    | Will be set to `1` when the job is complete, omitted if still in progress.                                                                   |
-| `code`        | A code representing job success (`0`) or failure (any other value).  Only applicable for completed jobs.                                     |
-| `description` | If the job failed, this will contain the error message.  Only applicable for completed jobs.                                                 |
+| `code`        | A code representing job success (`0`) or failure (any other value). Only applicable for completed jobs.                                      |
+| `description` | If the job failed, this will contain the error message. Only applicable for completed jobs.                                                  |
 | `perf`        | [Performance metrics](Plugins.md#performance-metrics) for the job, if reported by the Plugin (optional). Only applicable for completed jobs. |
 | `time_start`  | A Unix Epoch timestamp of when the job started.                                                                                              |
 | `time_end`    | A Unix Epoch timestamp of when the job completed. Only applicable for completed jobs.                                                        |
 | `elapsed`     | The elapsed time of the job, in seconds.                                                                                                     |
-| `cpu`         | An object representing the CPU use of the job.  See below.                                                                                   |
-| `mem`         | An object representing the memory use of the job.  See below.                                                                                |
+| `cpu`         | An object representing the CPU use of the job. See below.                                                                                    |
+| `mem`         | An object representing the memory use of the job. See below.                                                                                 |
 
 Throughout the course of a job, its process CPU and memory usage are measured periodically, and tracked in these objects:
 
@@ -682,9 +683,9 @@ Throughout the course of a job, its process CPU and memory usage are measured pe
 }
 ```
 
-The CPU is measured as percentage of one CPU core, so 100 means that a full CPU core is in use.  It may also go above 100, if multiple threads or sub-processes are in use.  The current value can be found in `current`, and the minimum (`min`) and maximum (`max`) readings are also tracked.  To compute the average, divide the `total` value by the `count`.
+The CPU is measured as percentage of one CPU core, so 100 means that a full CPU core is in use. It may also go above 100, if multiple threads or sub-processes are in use. The current value can be found in `current`, and the minimum (`min`) and maximum (`max`) readings are also tracked. To compute the average, divide the `total` value by the `count`.
 
-The memory usage is measured in bytes.  The current value can be found in `current`, and the minimum (`min`) and maximum (`max`) readings are also tracked.  To compute the average, divide the `total` value by the `count`.
+The memory usage is measured in bytes. The current value can be found in `current`, and the minimum (`min`) and maximum (`max`) readings are also tracked. To compute the average, divide the `total` value by the `count`.
 
 ### get_active_jobs
 
@@ -692,7 +693,7 @@ The memory usage is measured in bytes.  The current value can be found in `curre
 /api/app/get_active_jobs/v1
 ```
 
-This fetches status for **all active** jobs, and returns them all at once.  It takes no parameters (except an [API Key](APIReference.md#api-keys) of course).  The response format is as follows:
+This fetches status for **all active** jobs, and returns them all at once. It takes no parameters (except an [API Key](APIReference.md#api-keys) of course). The response format is as follows:
 
 ```js
 {
@@ -708,7 +709,7 @@ This fetches status for **all active** jobs, and returns them all at once.  It t
 }
 ```
 
-In addition to the [Standard Response Format](APIReference.md#standard-response-format), the response object will contain a `jobs` object.  This object will have zero or more nested objects, each representing one active job.  The inner property names are the Job IDs, and the contents are the status, progress, and other information about the active job.  For details on the job objects, see the [get_job_status](APIReference.md#get_job_status) API call above, as the parameters of each job will be the same as that API.
+In addition to the [Standard Response Format](APIReference.md#standard-response-format), the response object will contain a `jobs` object. This object will have zero or more nested objects, each representing one active job. The inner property names are the Job IDs, and the contents are the status, progress, and other information about the active job. For details on the job objects, see the [get_job_status](APIReference.md#get_job_status) API call above, as the parameters of each job will be the same as that API.
 
 ### update_job
 
@@ -716,7 +717,7 @@ In addition to the [Standard Response Format](APIReference.md#standard-response-
 /api/app/update_job/v1
 ```
 
-This updates a job that is already in progress.  Only certain job properties may be changed when the job is running, and those are listed below.  This is typically used to adjust timeouts, resource limits, or user notification settings.  API Keys require the `edit_events` privilege to use this API.  Only HTTP POST (JSON data) is acceptable.  The parameters are as follows:
+This updates a job that is already in progress. Only certain job properties may be changed when the job is running, and those are listed below. This is typically used to adjust timeouts, resource limits, or user notification settings. API Keys require the `edit_events` privilege to use this API. Only HTTP POST (JSON data) is acceptable. The parameters are as follows:
 
 | Parameter Name   | Description                                                                                                          |
 | ---------------- | -------------------------------------------------------------------------------------------------------------------- |
@@ -735,7 +736,7 @@ This updates a job that is already in progress.  Only certain job properties may
 | `memory_sustain` | (Optional) The number of seconds to allow the max memory to be exceeded.                                             |
 | `log_max_size`   | (Optional) The maximum allowed job log file size (in bytes) before the job is aborted.                               |
 
-As shown above, you can include *some* of the properties from the [Event Data Object](APIReference.md#event-data-format) to customize the job in progress.  Example request:
+As shown above, you can include _some_ of the properties from the [Event Data Object](APIReference.md#event-data-format) to customize the job in progress. Example request:
 
 ```js
 {
@@ -761,7 +762,7 @@ See the [Standard Response Format](APIReference.md#standard-response-format) for
 /api/app/abort_job/v1
 ```
 
-This aborts a running job given its ID.  API Keys require the `abort_events` privilege to use this API.  Only HTTP POST (JSON data) is acceptable.  The parameters are as follows:
+This aborts a running job given its ID. API Keys require the `abort_events` privilege to use this API. Only HTTP POST (JSON data) is acceptable. The parameters are as follows:
 
 | Parameter Name | Description                                         |
 | -------------- | --------------------------------------------------- |
@@ -791,7 +792,7 @@ See the [Standard Response Format](APIReference.md#standard-response-format) for
 /api/app/get_master_state/v1
 ```
 
-This fetches the current application "state", which contains information like the status of the scheduler (enabled or disabled).  The API accepts no parameters.  Example response:
+This fetches the current application "state", which contains information like the status of the scheduler (enabled or disabled). The API accepts no parameters. Example response:
 
 ```js
 {
@@ -800,7 +801,7 @@ This fetches the current application "state", which contains information like th
 }
 ```
 
-In addition to the [Standard Response Format](APIReference.md#standard-response-format), the response object will contain a `state` object.  This will contain an `enabled` property, which indicates the current state of the scheduler (enabled or disabled).  It may also contain other properties, but they are for internal use and can be ignored.
+In addition to the [Standard Response Format](APIReference.md#standard-response-format), the response object will contain a `state` object. This will contain an `enabled` property, which indicates the current state of the scheduler (enabled or disabled). It may also contain other properties, but they are for internal use and can be ignored.
 
 ### update_master_state
 
@@ -808,7 +809,7 @@ In addition to the [Standard Response Format](APIReference.md#standard-response-
 /api/app/update_master_state/v1
 ```
 
-This updates the master application state, i.e. toggling the scheduler on/off.  API Keys require the `state_update` privilege to use this API.  Only HTTP POST (JSON data) is acceptable.  The parameters are as follows:
+This updates the master application state, i.e. toggling the scheduler on/off. API Keys require the `state_update` privilege to use this API. Only HTTP POST (JSON data) is acceptable. The parameters are as follows:
 
 | Parameter Name | Description                                                                                  |
 | -------------- | -------------------------------------------------------------------------------------------- |
@@ -836,47 +837,47 @@ See the [Standard Response Format](APIReference.md#standard-response-format) for
 
 Here are descriptions of all the properties in the event object, which is common in many API calls:
 
-| Event Property   | Format  | Description                                                                                                                                                                                               |
-| ---------------- | ------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `algo`           | String  | Specifies the algorithm to use for picking a server from the target group. See [Algorithm](WebUI.md#algorithm).                                                                                           |
-| `api_key`        | String  | The API Key of the application that originally created the event (if created via API).                                                                                                                    |
-| `catch_up`       | Boolean | Specifies whether the event has [Run All Mode](WebUI.md#run-all-mode) enabled or not.                                                                                                                     |
-| `category`       | String  | The Category ID to which the event is assigned.  See [Categories Tab](WebUI.md#categories-tab).                                                                                                           |
-| `chain`          | String  | The chain reaction event ID to launch when jobs complete successfully.  See [Chain Reaction](WebUI.md#chain-reaction).                                                                                    |
-| `chain_error`    | String  | The chain reaction event ID to launch when jobs fail.  See [Chain Reaction](WebUI.md#chain-reaction).                                                                                                     |
-| `cpu_limit`      | Number  | Limit the CPU to the specified percentage (100 = 1 core), abort if exceeded. See [Event Resource Limits](WebUI.md#event-resource-limits).                                                                 |
-| `cpu_sustain`    | Number  | Only abort if the CPU limit is exceeded for this many seconds. See [Event Resource Limits](WebUI.md#event-resource-limits).                                                                               |
-| `created`        | Number  | The date/time of the event's initial creation, in Epoch seconds.                                                                                                                                          |
-| `detached`       | Boolean | Specifies whether [Detached Mode](WebUI.md#detached-mode) is enabled or not.                                                                                                                              |
-| `enabled`        | Boolean | Specifies whether the event is enabled (active in the scheduler) or not.                                                                                                                                  |
-| `id`             | String  | A unique ID assigned to the event when it was first created.                                                                                                                                              |
-| `log_max_size`   | Number  | Limit the job log file size to the specified amount, in bytes.  See [Event Resource Limits](WebUI.md#event-resource-limits).                                                                              |
-| `max_children`   | Number  | The total amount of concurrent jobs allowed to run. See [Event Concurrency](WebUI.md#event-concurrency).                                                                                                  |
-| `memory_limit`   | Number  | Limit the memory usage to the specified amount, in bytes. See [Event Resource Limits](WebUI.md#event-resource-limits).                                                                                    |
-| `memory_sustain` | Number  | Only abort if the memory limit is exceeded for this many seconds. See [Event Resource Limits](WebUI.md#event-resource-limits).                                                                            |
-| `modified`       | Number  | The date/time of the event's last modification, in Epoch seconds.                                                                                                                                         |
-| `multiplex`      | Boolean | Specifies whether the event has [Multiplexing](WebUI.md#multiplexing) mode is enabled or not.                                                                                                             |
-| `notes`          | String  | Text notes saved with the event, included in e-mail notifications. See [Event Notes](WebUI.md#event-notes).                                                                                               |
-| `notify_fail`    | String  | List of e-mail recipients to notify upon job failure (CSV). See [Event Notification](WebUI.md#event-notification).                                                                                        |
-| `notify_success` | String  | List of e-mail recipients to notify upon job success (CSV). See [Event Notification](WebUI.md#event-notification).                                                                                        |
-| `params`         | Object  | An object containing the Plugin's custom parameters, filled out with values from the Event Editor. See [Plugins Tab](WebUI.md#plugins-tab).                                                               |
-| `plugin`         | String  | The ID of the Plugin which will run jobs for the event. See [Plugins Tab](WebUI.md#plugins-tab).                                                                                                          |
-| `queue`          | Boolean | Allow jobs to be queued up when they can't run immediately. See [Allow Queued Jobs](WebUI.md#allow-queued-jobs).                                                                                          |
-| `queue_max`      | Number  | Maximum queue length, when `queue` is enabled. See [Allow Queued Jobs](WebUI.md#allow-queued-jobs).                                                                                                       |
-| `retries`        | Number  | The number of retries to allow before reporting an error. See [Event Retries](WebUI.md#event-retries).                                                                                                    |
-| `retry_delay`    | Number  | Optional delay between retries, in seconds. See [Event Retries](WebUI.md#event-retries).                                                                                                                  |
-| `stagger`        | Number  | If [Multiplexing](WebUI.md#multiplexing) is enabled, this specifies the number of seconds to wait between job launches.                                                                                   |
-| `target`         | String  | Events can target a [Server Group](WebUI.md#server-groups) (Group ID), or an individual server (hostname).                                                                                                |
-| `timeout`        | Number  | The maximum allowed run time for jobs, specified in seconds. See [Event Timeout](WebUI.md#event-timeout).                                                                                                 |
-| `timezone`       | String  | The timezone for interpreting the event timing settings. Needs to be an [IANA timezone string](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones).  See [Event Timing](WebUI.md#event-timing). |
-| `timing`         | Object  | An object describing when to run scheduled jobs.  See [Event Timing Object](APIReference.md#event-timing-object) below for details.                                                                       |
-| `title`          | String  | A display name for the event, shown on the [Schedule Tab](WebUI.md#schedule-tab) as well as in reports and e-mails.                                                                                       |
-| `username`       | String  | The username of the user who originally created the event (if created in the UI).                                                                                                                         |
-| `web_hook`       | String  | An optional URL to hit for the start and end of each job. See [Event Web Hook](WebUI.md#event-web-hook).                                                                                                  |
+| Event Property   | Format  | Description                                                                                                                                                                                              |
+| ---------------- | ------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `algo`           | String  | Specifies the algorithm to use for picking a server from the target group. See [Algorithm](WebUI.md#algorithm).                                                                                          |
+| `api_key`        | String  | The API Key of the application that originally created the event (if created via API).                                                                                                                   |
+| `catch_up`       | Boolean | Specifies whether the event has [Run All Mode](WebUI.md#run-all-mode) enabled or not.                                                                                                                    |
+| `category`       | String  | The Category ID to which the event is assigned. See [Categories Tab](WebUI.md#categories-tab).                                                                                                           |
+| `chain`          | String  | The chain reaction event ID to launch when jobs complete successfully. See [Chain Reaction](WebUI.md#chain-reaction).                                                                                    |
+| `chain_error`    | String  | The chain reaction event ID to launch when jobs fail. See [Chain Reaction](WebUI.md#chain-reaction).                                                                                                     |
+| `cpu_limit`      | Number  | Limit the CPU to the specified percentage (100 = 1 core), abort if exceeded. See [Event Resource Limits](WebUI.md#event-resource-limits).                                                                |
+| `cpu_sustain`    | Number  | Only abort if the CPU limit is exceeded for this many seconds. See [Event Resource Limits](WebUI.md#event-resource-limits).                                                                              |
+| `created`        | Number  | The date/time of the event's initial creation, in Epoch seconds.                                                                                                                                         |
+| `detached`       | Boolean | Specifies whether [Detached Mode](WebUI.md#detached-mode) is enabled or not.                                                                                                                             |
+| `enabled`        | Boolean | Specifies whether the event is enabled (active in the scheduler) or not.                                                                                                                                 |
+| `id`             | String  | A unique ID assigned to the event when it was first created.                                                                                                                                             |
+| `log_max_size`   | Number  | Limit the job log file size to the specified amount, in bytes. See [Event Resource Limits](WebUI.md#event-resource-limits).                                                                              |
+| `max_children`   | Number  | The total amount of concurrent jobs allowed to run. See [Event Concurrency](WebUI.md#event-concurrency).                                                                                                 |
+| `memory_limit`   | Number  | Limit the memory usage to the specified amount, in bytes. See [Event Resource Limits](WebUI.md#event-resource-limits).                                                                                   |
+| `memory_sustain` | Number  | Only abort if the memory limit is exceeded for this many seconds. See [Event Resource Limits](WebUI.md#event-resource-limits).                                                                           |
+| `modified`       | Number  | The date/time of the event's last modification, in Epoch seconds.                                                                                                                                        |
+| `multiplex`      | Boolean | Specifies whether the event has [Multiplexing](WebUI.md#multiplexing) mode is enabled or not.                                                                                                            |
+| `notes`          | String  | Text notes saved with the event, included in e-mail notifications. See [Event Notes](WebUI.md#event-notes).                                                                                              |
+| `notify_fail`    | String  | List of e-mail recipients to notify upon job failure (CSV). See [Event Notification](WebUI.md#event-notification).                                                                                       |
+| `notify_success` | String  | List of e-mail recipients to notify upon job success (CSV). See [Event Notification](WebUI.md#event-notification).                                                                                       |
+| `params`         | Object  | An object containing the Plugin's custom parameters, filled out with values from the Event Editor. See [Plugins Tab](WebUI.md#plugins-tab).                                                              |
+| `plugin`         | String  | The ID of the Plugin which will run jobs for the event. See [Plugins Tab](WebUI.md#plugins-tab).                                                                                                         |
+| `queue`          | Boolean | Allow jobs to be queued up when they can't run immediately. See [Allow Queued Jobs](WebUI.md#allow-queued-jobs).                                                                                         |
+| `queue_max`      | Number  | Maximum queue length, when `queue` is enabled. See [Allow Queued Jobs](WebUI.md#allow-queued-jobs).                                                                                                      |
+| `retries`        | Number  | The number of retries to allow before reporting an error. See [Event Retries](WebUI.md#event-retries).                                                                                                   |
+| `retry_delay`    | Number  | Optional delay between retries, in seconds. See [Event Retries](WebUI.md#event-retries).                                                                                                                 |
+| `stagger`        | Number  | If [Multiplexing](WebUI.md#multiplexing) is enabled, this specifies the number of seconds to wait between job launches.                                                                                  |
+| `target`         | String  | Events can target a [Server Group](WebUI.md#server-groups) (Group ID), or an individual server (hostname).                                                                                               |
+| `timeout`        | Number  | The maximum allowed run time for jobs, specified in seconds. See [Event Timeout](WebUI.md#event-timeout).                                                                                                |
+| `timezone`       | String  | The timezone for interpreting the event timing settings. Needs to be an [IANA timezone string](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones). See [Event Timing](WebUI.md#event-timing). |
+| `timing`         | Object  | An object describing when to run scheduled jobs. See [Event Timing Object](APIReference.md#event-timing-object) below for details.                                                                       |
+| `title`          | String  | A display name for the event, shown on the [Schedule Tab](WebUI.md#schedule-tab) as well as in reports and e-mails.                                                                                      |
+| `username`       | String  | The username of the user who originally created the event (if created in the UI).                                                                                                                        |
+| `web_hook`       | String  | An optional URL to hit for the start and end of each job. See [Event Web Hook](WebUI.md#event-web-hook).                                                                                                 |
 
 ### Event Timing Object
 
-The `timing` object describes the event's timing settings (when and how frequent it should run jobs).  It works similarly to the [Unix Cron](https://en.wikipedia.org/wiki/Cron) system, with selections of years, months, days, weekdays, hours and/or minutes.  Each property should be an array of numerical values.  If omitted, it means the same as "all" in that category (i.e. asterisk `*` in Cron syntax).
+The `timing` object describes the event's timing settings (when and how frequent it should run jobs). It works similarly to the [Unix Cron](https://en.wikipedia.org/wiki/Cron) system, with selections of years, months, days, weekdays, hours and/or minutes. Each property should be an array of numerical values. If omitted, it means the same as "all" in that category (i.e. asterisk `*` in Cron syntax).
 
 For example, an event with this timing object would run once per hour, on the hour:
 
@@ -886,7 +887,7 @@ For example, an event with this timing object would run once per hour, on the ho
 }
 ```
 
-It essentially means every year, every month, every day, every hour, but only on the "0" minute.  The scheduler ticks only once a minute, so this only results in running one job for each matching minute.
+It essentially means every year, every month, every day, every hour, but only on the "0" minute. The scheduler ticks only once a minute, so this only results in running one job for each matching minute.
 
 For another example, this would run twice daily, at 4:30 AM and 4:30 PM:
 
@@ -923,4 +924,4 @@ Here is a list of all the timing object properties and their descriptions:
 
 <hr/>
 
-&larr; *[Return to the main document](https://github.com/jhuckaby/Cronicle/blob/master/README.md)*
+&larr; _[Return to the main document](https://github.com/jhuckaby/Cronicle/blob/master/README.md)_

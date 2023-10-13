@@ -1,4 +1,4 @@
-import { EventData, BuiltInPlugin, Target } from '../shared/index.js'
+import { BuiltInPlugin, EventData, Target } from '../shared/index.js'
 
 export type CreateEventParams = EventData & {
   title: string

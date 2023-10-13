@@ -1,5 +1,5 @@
-import { Cronicle, BuiltInPlugin, Target } from 'cronicle-api-lib'
 import { faker } from '@faker-js/faker'
+import { BuiltInPlugin, Cronicle, Target } from 'cronicle-api-lib'
 
 export class EndpointTests {
   public constructor(private lib: Cronicle) {}

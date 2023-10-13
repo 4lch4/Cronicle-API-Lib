@@ -1,5 +1,3 @@
 import { BaseResponse } from '../shared/index.js'
 
-export type GetActiveJobsResponse = BaseResponse & {
-  
-}
+export type GetActiveJobsResponse = BaseResponse & {}

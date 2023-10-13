@@ -1,5 +1,3 @@
 import { BaseResponse } from '../shared/index.js'
 
-export type GetEventHistoryResponse = BaseResponse & {
-  
-}
+export type GetEventHistoryResponse = BaseResponse & {}

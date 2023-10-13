@@ -1,5 +1,3 @@
 import { BaseResponse } from '../shared/index.js'
 
-export type UpdateEventResponse = BaseResponse & {
-  
-}
+export type UpdateEventResponse = BaseResponse & {}

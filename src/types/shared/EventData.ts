@@ -1,4 +1,4 @@
-import { BuiltInPlugin, AlgorithmChoice, JobTimingDetails, Target } from './index.js'
+import { AlgorithmChoice, BuiltInPlugin, JobTimingDetails, Target } from './index.js'
 
 /**
  * This interfaces describes the various properties that can be attached to any response from the
