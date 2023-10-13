@@ -1,4 +1,4 @@
-import { BuiltInPlugin, JobTimingDetails, Target } from './index.js'
+import { BuiltInPlugin, AlgorithmChoice, JobTimingDetails, Target } from './index.js'
 
 /**
  * This interfaces describes the various properties that can be attached to any response from the
@@ -6,7 +6,7 @@ import { BuiltInPlugin, JobTimingDetails, Target } from './index.js'
  */
 export type EventData = {
   /** Specifies the algorithm to use for picking a server from the target group. */
-  algo?: Algorithm
+  algo?: AlgorithmChoice
 
   /** The API Key of the application that originally created the event (if created via API). */
   api_key?: string

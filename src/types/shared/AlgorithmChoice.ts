@@ -1,5 +1,5 @@
 /** This enum defines the possible values for the `algo` property of an event. */
-export enum Algorithm {
+export enum AlgorithmChoice {
   /** Pick a random server from the group. */
   Random = 'random',
 
