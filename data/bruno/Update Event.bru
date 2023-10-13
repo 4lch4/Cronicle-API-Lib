@@ -1,0 +1,18 @@
+meta {
+  name: Update Event
+  type: http
+  seq: 4
+}
+
+post {
+  url: {{ BASE_URL }}/update_event/v1
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "id": "elnnsnmli2f",
+    "title": "Test Title"
+  }
+}

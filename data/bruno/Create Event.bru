@@ -1,0 +1,21 @@
+meta {
+  name: Create Event
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{ BASE_URL }}/create_event/v1
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "title": "Required Title",
+    "enabled": 0,
+    "category": "general",
+    "plugin": "{{ TEST_PLUGIN_ID }}",
+    "target": "{{ SERVER_GROUP }}"
+  }
+}

@@ -1,0 +1,111 @@
+{
+  "code": 0,
+  "rows": [
+    {
+      "enabled": 1,
+      "params": {
+        "duration": "60",
+        "progress": 1,
+        "burn": 0,
+        "action": "Success",
+        "secret": "Will not be shown in Event UI"
+      },
+      "timing": {
+        "hours": [
+          0,
+          6,
+          12,
+          18
+        ],
+        "minutes": [
+          0
+        ]
+      },
+      "max_children": 1,
+      "timeout": 3600,
+      "catch_up": 0,
+      "queue_max": 1000,
+      "timezone": "America/Chicago",
+      "plugin": "testplug",
+      "title": "Test",
+      "category": "general",
+      "target": "allgrp",
+      "algo": "random",
+      "multiplex": 0,
+      "stagger": 0,
+      "retries": 0,
+      "retry_delay": 0,
+      "detached": 0,
+      "queue": 0,
+      "chain": "",
+      "chain_error": "",
+      "notify_success": "",
+      "notify_fail": "",
+      "web_hook": "",
+      "cpu_limit": 0,
+      "cpu_sustain": 0,
+      "memory_limit": 0,
+      "memory_sustain": 0,
+      "log_max_size": 0,
+      "notes": "",
+      "id": "eln4xeene0o",
+      "modified": 1696011403,
+      "created": 1696011403,
+      "username": "admin"
+    },
+    {
+      "enabled": 1,
+      "params": {
+        "script": "#!/bin/sh\n\n# Enter your shell script code here\n\ndocker run --env-file /root/batch/let/.env 4lch4/let\n",
+        "annotate": 1,
+        "json": 0
+      },
+      "timing": {
+        "hours": [
+          4
+        ],
+        "minutes": [
+          0
+        ]
+      },
+      "max_children": 1,
+      "timeout": 3600,
+      "catch_up": 0,
+      "queue_max": 1000,
+      "timezone": "America/Chicago",
+      "category": "clmdmaq4901",
+      "plugin": "shellplug",
+      "title": "Liatrio-Emoji-Tracker",
+      "target": "allgrp",
+      "algo": "random",
+      "multiplex": 0,
+      "stagger": 0,
+      "retries": 0,
+      "retry_delay": 0,
+      "detached": 0,
+      "queue": 0,
+      "chain": "",
+      "chain_error": "",
+      "notify_success": "",
+      "notify_fail": "",
+      "web_hook": "",
+      "cpu_limit": 0,
+      "cpu_sustain": 0,
+      "memory_limit": 0,
+      "memory_sustain": 0,
+      "log_max_size": 0,
+      "notes": "",
+      "id": "elmdmdkc802",
+      "modified": 1694360302,
+      "created": 1694360302,
+      "username": "admin"
+    }
+  ],
+  "list": {
+    "page_size": 50,
+    "first_page": 0,
+    "last_page": 0,
+    "length": 2,
+    "type": "list"
+  }
+}
