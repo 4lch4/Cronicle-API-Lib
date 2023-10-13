@@ -47,7 +47,7 @@ export class Cronicle {
    * @param endpoint The API Endpoint to call
    * @param opts An optional object containing additional options to pass to the request.
    */
-  private async get<R = BaseResponse>(endpoint: Endpoints, opts?: AxiosRequestConfig): Promise<R> {
+  public async get<R = BaseResponse>(endpoint: Endpoints, opts?: AxiosRequestConfig): Promise<R> {
     try {
       const { data } = await this.client.get(`/${endpoint}/v1`, opts)
 
@@ -65,7 +65,7 @@ export class Cronicle {
    * @param endpoint The API Endpoint to call
    * @param opts An optional object containing additional options to pass to the request
    */
-  private async post<R = BaseResponse>(
+  public async post<R = BaseResponse>(
     endpoint: Endpoints,
     data: any,
     opts?: AxiosRequestConfig
