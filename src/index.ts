@@ -46,8 +46,6 @@ export class Cronicle {
    *
    * @param endpoint The API Endpoint to call
    * @param opts An optional object containing additional options to pass to the request.
-   *
-   * @returns The response data from the API request.
    */
   private async get<R = BaseResponse>(endpoint: Endpoints, opts?: AxiosRequestConfig): Promise<R> {
     try {
@@ -55,7 +53,7 @@ export class Cronicle {
 
       return data
     } catch (error) {
-      console.error(`[Cronicle#GET]: Error caught while calling ${endpoint}:`, error)
+      console.error(`[Cronicle#get]: Error caught while calling ${endpoint}:`, error)
       throw error
     }
   }
@@ -66,8 +64,6 @@ export class Cronicle {
    *
    * @param endpoint The API Endpoint to call
    * @param opts An optional object containing additional options to pass to the request
-   *
-   * @returns The response data from the API
    */
   private async post<R = BaseResponse>(
     endpoint: Endpoints,
@@ -79,31 +75,8 @@ export class Cronicle {
 
       return res.data
     } catch (error) {
-      console.error(`[Cronicle#POST]: Error caught while calling ${endpoint}:`, error)
+      console.error(`[Cronicle#post]: Error caught while calling ${endpoint}:`, error)
       throw error
-    }
-  }
-
-  /**
-   * Has to support the following methods:
-   *
-   * - `get_schedule`
-   * - `get_event_history`
-   * - `get_history`
-   */
-  public async getAllPages(endpoint: 'get_schedule' | 'get_event_history' | 'get_history') {
-    switch (endpoint) {
-      case 'get_schedule': {
-        break
-      }
-
-      case 'get_event_history': {
-        break
-      }
-
-      case 'get_history': {
-        break
-      }
     }
   }
 
@@ -111,6 +84,13 @@ export class Cronicle {
 
   // #region Endpoints
 
+  /**
+   * Gets scheduled events and returns details about them. It supports pagination to fetch chunks,
+   * with the default being the first 50 events.
+   *
+   * @param offset The offset into the data to start returning records, defaults to `0`.
+   * @param limit The number of records to return, defaults to `50`.
+   */
   public async getSchedule(offset: number = 0, limit: number = 50): Promise<GetScheduleResponse> {
     return this.get<GetScheduleResponse>('get_schedule', { params: { offset, limit } })
   }
@@ -122,25 +102,44 @@ export class Cronicle {
    * Fetches details about a single event, given its ID or exact title.
    *
    * @param eventFilter The ID or title (case-sensitive) of the event to get.
-   *
-   * @returns The response data from the API.
    */
   public async getEvent(eventFilter: { id?: string; title?: string }): Promise<GetEventResponse> {
     return this.get<GetEventResponse>('get_event', { params: eventFilter })
   }
 
+  /**
+   * Creates a new event with the provided values and adds it to the schedule.
+   *
+   * @param data The details of the event to create.
+   */
   public async createEvent(data: CreateEventParams): Promise<CreateEventResponse> {
     return this.post<CreateEventResponse>('create_event', data)
   }
 
+  /**
+   * Updates an existing event given its ID, replacing any properties specified.
+   *
+   * @param data The properties to update on the event.
+   */
   public async updateEvent(data: UpdateEventParams): Promise<UpdateEventResponse> {
     return this.post<UpdateEventResponse>('update_event', data)
   }
 
+  /**
+   * Deletes an event from the schedule, given its ID.
+   *
+   * @param id The ID of the event to delete.
+   */
   public async deleteEvent(id: string): Promise<DeleteEventResponse> {
     return this.post<DeleteEventResponse>('delete_event', { id })
   }
 
+  /**
+   * Gets the event history (i.e. previously completed jobs) for a specific event. The response
+   * array is sorted by reverse timestamp (descending), so the latest jobs are listed first.
+   *
+   * @param params Query params to filter the event history by.
+   */
   public async getEventHistory(params: GetEventHistoryParams): Promise<GetEventHistoryResponse> {
     return this.get<GetEventHistoryResponse>('get_event_history', { params })
   }
@@ -148,6 +147,10 @@ export class Cronicle {
   // TODO: Finish implementing this method.
   // public async getFullEventHistory(id: string) {}
 
+  /**
+   * Gets previously completed jobs for all events. The response array is sorted by reverse
+   * timestamp (descending), so the latest jobs are listed first.
+   */
   public async getHistory(): Promise<GetHistoryResponse> {
     return this.get<GetHistoryResponse>('get_history')
   }
@@ -155,32 +158,69 @@ export class Cronicle {
   // TODO: Finish implementing this method.
   // public async getFullHistory() {}
 
-  public async runEvent(eventFilter: number | string, data?: EventData): Promise<RunEventResponse> {
-    const filter = typeof eventFilter === 'number' ? { id: eventFilter } : { title: eventFilter }
-
+  /**
+   * Immediately starts an on-demand job for an event, regardless of the schedule. This is
+   * effectively the same as a user clicking the "Run Now" button in the UI.
+   *
+   * @param filter The value to use for deciding which event to run.
+   * @param data Any extra data to pass to the event.
+   */
+  public async runEvent(
+    filter: { id?: string; title?: string },
+    data?: EventData
+  ): Promise<RunEventResponse> {
     return this.post('run_event', { ...data, ...filter })
   }
 
+  /**
+   * Gets the status for a job that is currently in progress or completed.
+   *
+   * @param id The ID of the job to get the status for.
+   */
   public async getJobStatus(id: string): Promise<GetJobStatusResponse> {
     return this.get<GetJobStatusResponse>('get_job_status', { params: { id } })
   }
 
+  /**
+   * Gets the status for all active jobs and returns them all at once.
+   */
   public async getActiveJobs(): Promise<GetActiveJobsResponse> {
     return this.get<GetActiveJobsResponse>('get_active_jobs')
   }
 
+  /**
+   * Updates a job that is already in progress. Only certain job properties may be changed when the
+   * job is running, and those are listed below. This is typically used to adjust timeouts, resource
+   * limits, or user notification settings.
+   *
+   * @param data The properties to update on the job.
+   */
   public async updateJob(data: UpdateJobParams): Promise<UpdateJobResponse> {
     return this.post<UpdateJobResponse>('update_job', data)
   }
 
+  /**
+   * Aborts a running job given its ID.
+   *
+   * @param id The ID of the job to abort.
+   */
   public async abortJob(id: string): Promise<AbortJobResponse> {
     return this.post<AbortJobResponse>('abort_job', { id })
   }
 
+  /**
+   * Gets the current application "state", which contains information like the status of the
+   * scheduler (enabled or disabled).
+   */
   public async getMasterState(): Promise<GetMasterStateResponse> {
     return this.get<GetMasterStateResponse>('get_master_state')
   }
 
+  /**
+   * Updates the master application state, i.e. toggling the scheduler on/off.
+   *
+   * @param enabled The new state to set the scheduler to.
+   */
   public async updateMasterState(enabled: 0 | 1): Promise<UpdateMasterStateResponse> {
     return this.post<UpdateMasterStateResponse>('update_master_state', { enabled })
   }
