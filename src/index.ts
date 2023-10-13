@@ -95,9 +95,6 @@ export class Cronicle {
     return this.get<GetScheduleResponse>('get_schedule', { params: { offset, limit } })
   }
 
-  // TODO: Finish implementing this method.
-  // public async getFullSchedule() {}
-
   /**
    * Fetches details about a single event, given its ID or exact title.
    *
@@ -144,9 +141,6 @@ export class Cronicle {
     return this.get<GetEventHistoryResponse>('get_event_history', { params })
   }
 
-  // TODO: Finish implementing this method.
-  // public async getFullEventHistory(id: string) {}
-
   /**
    * Gets previously completed jobs for all events. The response array is sorted by reverse
    * timestamp (descending), so the latest jobs are listed first.
@@ -154,9 +148,6 @@ export class Cronicle {
   public async getHistory(): Promise<GetHistoryResponse> {
     return this.get<GetHistoryResponse>('get_history')
   }
-
-  // TODO: Finish implementing this method.
-  // public async getFullHistory() {}
 
   /**
    * Immediately starts an on-demand job for an event, regardless of the schedule. This is
@@ -226,6 +217,19 @@ export class Cronicle {
   }
 
   // #endregion Endpoints
+
+  // #region TODO
+
+  // TODO: Finish implementing this method.
+  // public async getFullHistory() {}
+
+  // TODO: Finish implementing this method.
+  // public async getFullEventHistory(id: string) {}
+
+  // TODO: Finish implementing this method.
+  // public async getFullSchedule() {}
+
+  // #endregion TODO
 }
 
 export * from './types/index.js'
