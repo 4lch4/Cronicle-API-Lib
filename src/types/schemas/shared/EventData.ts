@@ -1,5 +1,6 @@
 import { z } from 'zod'
-import { AlgorithmChoice, BuiltInPlugin, BuiltInTarget, JobTimingDetails } from './index.js'
+import { JobTimingDetails } from './JobTimingDetails.js'
+import { AlgorithmChoice, BuiltInPlugin, BuiltInTarget } from './index.js'
 
 export const EventData = z
   .object({
@@ -24,7 +25,7 @@ export const EventData = z
     notes: z.string(),
     notify_fail: z.string(),
     notify_success: z.string(),
-    params: z.object({}),
+    params: z.any(),
     plugin: z.union([z.string(), BuiltInPlugin]),
     queue: z.boolean(),
     queue_max: z.number().min(1),
