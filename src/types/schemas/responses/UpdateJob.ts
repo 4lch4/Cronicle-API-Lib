@@ -1,3 +1,3 @@
 import { BaseResponse } from '../shared/index.js'
 
-export const UpdateJobResponseSchema = BaseResponse
+export const UpdateJobResponse = BaseResponse

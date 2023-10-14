@@ -1,3 +1,3 @@
 import { BaseResponse } from '../shared/index.js'
 
-export const UpdateMasterStateResponseSchema = BaseResponse
+export const UpdateMasterStateResponse = BaseResponse

@@ -1,3 +1,3 @@
 import { BaseResponse } from '../shared/index.js'
 
-export const UpdateEventResponseSchema = BaseResponse
+export const UpdateEventResponse = BaseResponse
