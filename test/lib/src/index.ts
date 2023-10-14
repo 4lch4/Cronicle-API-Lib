@@ -3,72 +3,58 @@ import {
   // Target
   Cronicle,
 } from 'cronicle-api-lib'
-// import { z } from 'zod'
-import { EndpointTests } from './Endpoints.js'
+import { Endpoints } from './Endpoints.js'
+import { logger } from './Shared.js'
 
 const API_URL = process.env.CRONICLE_API_URL
 const API_KEY = process.env.CRONICLE_API_KEY
 
-export const TEST_EVENT_ID = 'elnnsnmli2f'
-
 if (!API_URL || !API_KEY) {
-  console.error('Missing environment variables CRONICLE_API_URL or CRONICLE_API_KEY')
+  logger.error('Missing environment variables CRONICLE_API_URL or CRONICLE_API_KEY!', {
+    CRONICLE_API_URL: API_URL,
+    CRONICLE_API_KEY: API_KEY,
+  })
+
   process.exit(1)
 }
 
 const lib = new Cronicle(API_URL, API_KEY)
-const tester = new EndpointTests(lib)
+const tester = new Endpoints(lib)
+
+async function wait(seconds: number) {
+  return new Promise((resolve, reject) => {
+    try {
+      setTimeout(resolve, seconds * 1000)
+    } catch (err) {
+      reject(err)
+    }
+  })
+}
 
 async function main(): Promise<any> {
   try {
     const starterEvent = await tester.createEvent()
 
-    if (starterEvent?.id) {
-      const getEvent = await tester.getEvent(starterEvent.id)
-      const updateEvent = await tester.updateEvent(starterEvent.id)
-      const getUpdatedEvent = await tester.getEvent(starterEvent.id)
-      const runEvent = await tester.runEvent(starterEvent.id)
+    logger.info(`Successfully created starter event. StarterEvent ID: ${starterEvent.id}`)
 
-      return {
-        starterEvent,
-        getEvent,
-        updateEvent,
-        getUpdatedEvent,
-        runEvent,
-      }
-    } else {
-      console.error('Failed to create starter event.')
-      console.error(starterEvent)
-    }
+    const getEvent = await tester.getEvent(starterEvent.id)
+    const updateEvent = await tester.updateEvent(getEvent.id)
+    const getUpdatedEvent = await tester.getEvent(getEvent.id)
+    const runEvent = await tester.runEvent(getEvent.id)
 
-    // const schedule = await lib.getSchedule()
+    logger.info('Waiting 30 seconds before deleting event...')
 
-    // const getEventAlpha = await lib.getEvent({ id: TEST_EVENT_ID })
+    await wait(getEvent.params.duration + 10 || 30)
 
-    // const updateEvent = await lib.updateEvent({
-    //   id: TEST_EVENT_ID,
-    //   title: 'Test Event 3',
-    // })
-
-    // const getEventBeta = await lib.getEvent({ id: TEST_EVENT_ID })
-
-    const createEvent = await tester.createEvent()
-
-    if (createEvent.id) {
-      const getEvent = await lib.getEvent({ id: createEvent.id })
-
-      return {
-        createEvent,
-        getEvent,
-      }
-    }
+    const deleteEvent = await tester.deleteEvent(getEvent.id)
 
     return {
-      // getEventAlpha,
-      // updateEvent,
-      // getEventBeta,
-      createEvent,
-      // schedule,
+      starterEvent,
+      getEvent,
+      updateEvent,
+      getUpdatedEvent,
+      runEvent,
+      deleteEvent,
     }
   } catch (error) {
     console.error('Error caught:', error)
@@ -78,9 +64,9 @@ async function main(): Promise<any> {
 }
 
 main()
-  .then(res => {
+  .then(_res => {
     console.log('Execution completed successfully!')
 
-    console.log(JSON.stringify(res, null, 2))
+    // console.log(JSON.stringify(res, null, 2))
   })
   .catch(console.error)

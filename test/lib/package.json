@@ -29,7 +29,7 @@
     "dist"
   ],
   "scripts": {
-    "build": "tsc && tsc-alias",
+    "build": "tsc",
     "lint": "prettier -c .",
     "pretty": "prettier --write .",
     "scan": "snyk monitor && snyk code test",
@@ -37,9 +37,11 @@
     "test": "echo 'There are currently no tests available.'"
   },
   "dependencies": {
+    "@axiomhq/winston": "^1.0.0-rc.1",
     "@faker-js/faker": "^8.1.0",
     "axios": "^1.5.1",
     "cronicle-api-lib": "file:../../",
+    "winston": "^3.11.0",
     "zod": "^3.22.4"
   },
   "devDependencies": {

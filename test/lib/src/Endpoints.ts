@@ -1,7 +1,16 @@
 import { faker } from '@faker-js/faker'
-import { BuiltInPlugin, Cronicle, Target } from 'cronicle-api-lib'
+import {
+  BuiltInPlugin,
+  CreateEventParams,
+  Cronicle,
+  Schemas,
+  Target,
+  UpdateEventParams,
+  UpdateJobParams,
+} from 'cronicle-api-lib'
+import { DEFAULT_TIMEZONE, TESTING_EVENT_CATEGORY, logger } from './Shared.js'
 
-export class EndpointTests {
+export class Endpoints {
   public constructor(private lib: Cronicle) {}
 
   /**
@@ -12,14 +21,15 @@ export class EndpointTests {
    */
   public async getSchedule() {
     try {
+      logger.debug(`[Endpoints#getSchedule]: Calling getSchedule...`)
+
       const res = await this.lib.getSchedule()
 
-      return res
+      return Schemas.GetScheduleResponse.parse(res)
     } catch (error) {
-      console.error(`[EndpointTests#getSchedule]: Error caught:`)
-      console.error(error)
+      logger.error(`[Endpoints#getSchedule]: Error caught:`, error)
 
-      return undefined
+      throw error
     }
   }
 
@@ -32,40 +42,53 @@ export class EndpointTests {
    */
   public async getEvent(id: string) {
     try {
+      logger.debug(`[Endpoints#getEvent]: Calling getEvent({ id: ${id} })...`)
+
       const res = await this.lib.getEvent({ id })
 
-      return res
+      return Schemas.GetEventResponse.parse(res)
     } catch (error) {
-      console.error(`[EndpointTests#getEvent]: Error caught:`)
-      console.error(error)
+      logger.error(`[Endpoints#getEvent]: Error caught:`, error)
 
-      return undefined
+      throw error
     }
   }
 
   /**
-   * Creates a new Event with a random title and duration. The duration will be between 10 - 30
+   * Creates a new Event with a random title and test duration. The duration will be between 10 - 30
    * seconds.
    *
    * @returns The response from the API.
    */
   public async createEvent() {
     try {
-      const res = await this.lib.createEvent({
-        category: 'general',
-        title: faker.lorem.sentence({ min: 2, max: 5 }),
+      const eventTitle = faker.lorem.sentence({ min: 2, max: 5 })
+      const eventDuration = faker.number.int({ min: 10, max: 30 })
+      const eventRetries = faker.number.int({ min: 1, max: 3 })
+
+      const successfulTestEvent: CreateEventParams = {
+        category: TESTING_EVENT_CATEGORY,
+        title: eventTitle,
         enabled: 0,
+        retries: eventRetries,
         plugin: BuiltInPlugin.Test,
         target: Target.AllServers,
-        params: { duration: faker.number.int({ min: 10, max: 30 }) },
-      })
+        timezone: DEFAULT_TIMEZONE,
+        params: { duration: eventDuration, burn: 0, action: 'Success' },
+      }
 
-      return res
+      logger.debug(
+        `[Endpoints#createEvent]: Calling createEvent() with title "${eventTitle}" and duration "${eventDuration}"...`,
+        { successfulTestEvent }
+      )
+
+      const res = await this.lib.createEvent(successfulTestEvent)
+
+      return Schemas.CreateEventResponse.parse(res)
     } catch (error) {
-      console.error(`[EndpointTests#createEvent]: Error caught:`)
-      console.error(error)
+      logger.error(`[Endpoints#createEvent]: Error caught:`, error)
 
-      return undefined
+      throw error
     }
   }
 
@@ -78,17 +101,23 @@ export class EndpointTests {
    */
   public async updateEvent(id: string) {
     try {
-      const res = await this.lib.updateEvent({
+      const eventData: UpdateEventParams = {
         title: faker.lorem.sentence({ min: 2, max: 5 }),
         id,
-      })
+      }
 
-      return res
+      logger.debug(
+        `[Endpoints#updateEvent]: Calling updateEvent() with title "${eventData.title}" and ID "${eventData.id}"...`,
+        eventData
+      )
+
+      const res = await this.lib.updateEvent(eventData)
+
+      return Schemas.UpdateEventResponse.parse(res)
     } catch (error) {
-      console.error(`[EndpointTests#updateEvent]: Error caught:`)
-      console.error(error)
+      logger.error(`[Endpoints#updateEvent]: Error caught:`, error)
 
-      return undefined
+      throw error
     }
   }
 
@@ -104,14 +133,15 @@ export class EndpointTests {
    */
   public async deleteEvent(id: string) {
     try {
+      logger.debug(`[Endpoints#deleteEvent]: Calling deleteEvent({ id: ${id} })...`)
+
       const res = await this.lib.deleteEvent(id)
 
-      return res
+      return Schemas.DeleteEventResponse.parse(res)
     } catch (error) {
-      console.error(`[EndpointTests#deleteEvent]: Error caught:`)
-      console.error(error)
+      logger.error(`[Endpoints#deleteEvent]: Error caught:`, error)
 
-      return undefined
+      throw error
     }
   }
 
@@ -125,14 +155,15 @@ export class EndpointTests {
    */
   public async getEventHistory(id: string) {
     try {
+      logger.debug(`[Endpoints#getEventHistory]: Calling getEventHistory({ id: ${id} })...`)
+
       const res = await this.lib.getEventHistory({ id })
 
-      return res
+      return Schemas.GetEventHistoryResponse.parse(res)
     } catch (error) {
-      console.error(`[EndpointTests#getEventHistory]: Error caught:`)
-      console.error(error)
+      logger.error(`[Endpoints#getEventHistory]: Error caught:`, error)
 
-      return undefined
+      throw error
     }
   }
 
@@ -144,14 +175,15 @@ export class EndpointTests {
    */
   public async getHistory() {
     try {
+      logger.debug(`[Endpoints#getHistory]: Calling getHistory()...`)
+
       const res = await this.lib.getHistory()
 
-      return res
+      return Schemas.GetHistoryResponse.parse(res)
     } catch (error) {
-      console.error(`[EndpointTests#getHistory]: Error caught:`)
-      console.error(error)
+      logger.error(`[Endpoints#getHistory]: Error caught:`, error)
 
-      return undefined
+      throw error
     }
   }
 
@@ -165,14 +197,15 @@ export class EndpointTests {
    */
   public async runEvent(id: string) {
     try {
-      const res = await this.lib.runEvent(id)
+      logger.debug(`[Endpoints#runEvent]: Calling runEvent({ id: ${id} })...`)
 
-      return res
+      const res = await this.lib.runEvent({ id })
+
+      return Schemas.RunEventResponse.parse(res)
     } catch (error) {
-      console.error(`[EndpointTests#runEvent]: Error caught:`)
-      console.error(error)
+      logger.error(`[Endpoints#runEvent]: Error caught:`, error)
 
-      return undefined
+      throw error
     }
   }
 
@@ -185,14 +218,15 @@ export class EndpointTests {
    */
   public async getJobStatus(id: string) {
     try {
+      logger.debug(`[Endpoints#getJobStatus]: Calling getJobStatus({ id: ${id} })...`)
+
       const res = await this.lib.getJobStatus(id)
 
-      return res
+      return Schemas.GetJobStatusResponse.parse(res)
     } catch (error) {
-      console.error(`[EndpointTests#getJobStatus]: Error caught:`)
-      console.error(error)
+      logger.error(`[Endpoints#getJobStatus]: Error caught:`, error)
 
-      return undefined
+      throw error
     }
   }
 
@@ -203,14 +237,15 @@ export class EndpointTests {
    */
   public async getActiveJobs() {
     try {
+      logger.debug(`[Endpoints#getActiveJobs]: Calling getActiveJobs()...`)
+
       const res = await this.lib.getActiveJobs()
 
-      return res
+      return Schemas.GetActiveJobsResponse.parse(res)
     } catch (error) {
-      console.error(`[EndpointTests#getActiveJobs]: Error caught:`)
-      console.error(error)
+      logger.error(`[Endpoints#getActiveJobs]: Error caught:`, error)
 
-      return undefined
+      throw error
     }
   }
 
@@ -225,19 +260,25 @@ export class EndpointTests {
    */
   public async updateJob(id: string) {
     try {
-      const res = await this.lib.updateJob({
+      const updateData: UpdateJobParams = {
         id,
         timeout: faker.number.int({ min: 60, max: 120 }),
         retries: faker.number.int({ min: 1, max: 3 }),
         retry_delay: faker.number.int({ min: 5, max: 10 }),
-      })
+      }
 
-      return res
+      logger.debug(
+        `[Endpoints#updateJob]: Calling updateJob() with ID "${updateData.id}" and data:`,
+        updateData
+      )
+
+      const res = await this.lib.updateJob(updateData)
+
+      return Schemas.UpdateJobResponse.parse(res)
     } catch (error) {
-      console.error(`[EndpointTests#updateJob]: Error caught:`)
-      console.error(error)
+      logger.error(`[Endpoints#updateJob]: Error caught:`, error)
 
-      return undefined
+      throw error
     }
   }
 
@@ -250,14 +291,15 @@ export class EndpointTests {
    */
   public async abortJob(id: string) {
     try {
+      logger.debug(`[Endpoints#abortJob]: Calling abortJob({ id: ${id} })...`)
+
       const res = await this.lib.abortJob(id)
 
-      return res
+      return Schemas.AbortJobResponse.parse(res)
     } catch (error) {
-      console.error(`[EndpointTests#abortJob]: Error caught:`)
-      console.error(error)
+      logger.error(`[Endpoints#abortJob]: Error caught:`, error)
 
-      return undefined
+      throw error
     }
   }
 
@@ -269,14 +311,15 @@ export class EndpointTests {
    */
   public async getMasterState() {
     try {
+      logger.debug(`[Endpoints#getMasterState]: Calling getMasterState()...`)
+
       const res = await this.lib.getMasterState()
 
-      return res
+      return Schemas.GetMasterStateResponse.parse(res)
     } catch (error) {
-      console.error(`[EndpointTests#getMasterState]: Error caught:`)
-      console.error(error)
+      logger.error(`[Endpoints#getMasterState]: Error caught:`, error)
 
-      return undefined
+      throw error
     }
   }
 
@@ -289,14 +332,15 @@ export class EndpointTests {
    */
   public async updateMasterState(state: 0 | 1) {
     try {
+      logger.debug(`[Endpoints#updateMasterState]: Calling updateMasterState(${state})...`)
+
       const res = await this.lib.updateMasterState(state)
 
-      return res
+      return Schemas.UpdateMasterStateResponse.parse(res)
     } catch (error) {
-      console.error(`[EndpointTests#updateMasterState]: Error caught:`)
-      console.error(error)
+      logger.error(`[Endpoints#updateMasterState]: Error caught:`, error)
 
-      return undefined
+      throw error
     }
   }
 }
