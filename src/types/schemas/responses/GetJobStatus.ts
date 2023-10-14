@@ -20,9 +20,6 @@ export const GetJobStatusResponseData = z
   })
   .partial()
 
-export const GetJobStatusResponse = z.union([
-  BaseResponse,
-  EventData,
-  JobOutput,
-  GetJobStatusResponseData,
-])
+export const GetJobStatusResponse = BaseResponse.merge(EventData)
+  .merge(JobOutput)
+  .merge(GetJobStatusResponseData)
